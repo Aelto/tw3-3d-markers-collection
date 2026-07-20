@@ -8,9 +8,9 @@ function UpdateObjectives() {
 function OnSpawned( spawnData : SEntitySpawnData ) {
   wrappedMethod(spawnData);
 
+  this.AddTimer('TDMCAQ_delayOnelinerCreation', 1.0f);
+  this.AddTimer('TDMCAQ_delayOnelinerCreation', 5.0f);
   this.AddTimer('TDMCAQ_delayOnelinerCreation', 10.0f);
-  this.AddTimer('TDMCAQ_delayOnelinerCreation', 20.0f);
-  this.AddTimer('TDMCAQ_delayOnelinerCreation', 30.0f);
 }
 
 @addMethod(W3PlayerWitcher)
