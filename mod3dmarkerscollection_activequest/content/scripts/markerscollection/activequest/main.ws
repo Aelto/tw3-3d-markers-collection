@@ -4,6 +4,12 @@ function UpdateObjectives() {
   TDMCAQ_tryCreateOneliner();
 }
 
+@wrapMethod(CR4HudModuleQuests)
+function HighlightObjective(objective: CJournalQuestObjective) {
+  wrappedMethod(objective);
+  TDMCAQ_tryCreateOneliner();
+}
+
 @wrapMethod(W3PlayerWitcher)
 function OnSpawned( spawnData : SEntitySpawnData ) {
   wrappedMethod(spawnData);
