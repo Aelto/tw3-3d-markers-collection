@@ -14,3 +14,6 @@ release-prepare-dependencies:
 
 release-zip:
   cd release && zip -r mod3dmarkerscollection mods
+
+update-sharedutils:
+  git submodule update --remote
