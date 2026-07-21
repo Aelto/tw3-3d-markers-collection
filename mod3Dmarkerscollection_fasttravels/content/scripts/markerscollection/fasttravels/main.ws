@@ -49,9 +49,21 @@ class TDMCFT_Oneliner extends SU_Oneliner {
     return this;
   }
 
+  private var was_visible_by_senses: bool;
   function getVisible(player_position: Vector): bool {
-    return theGame.IsFocusModeActive()
-        && super.getVisible(player_position);
+    if (
+      theGame.IsFocusModeActive()
+      && super.getVisible(player_position)
+    ) {
+      this.was_visible_by_senses = true;
+
+      return true;
+    }
+
+    this.was_visible_by_senses = this.cached_screen_position.X >= 0.33
+      && this.cached_screen_position.X <= 0.66;
+
+    return this.was_visible_by_senses;
   }
 }
 
