@@ -43,7 +43,9 @@ class TDMCFT_Oneliner extends SU_Oneliner {
 
   function init(position: Vector): TDMCFT_Oneliner {
     this.position = position + Vector(0, 0, 1.0);
-    this.text = "<img src='img://icons/inventory/other/squarecoin.dds' height='18' width='18' />";
+
+    // dlc\dlcmarkerscollection_icons\data\gameplay\gui_new\icons\markers\icon_signpost.png
+    this.text = "<img src='img://icons/markers/icon_signpost.png' height='32' width='32' />";
     this.register();
 
     return this;
