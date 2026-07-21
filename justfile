@@ -9,10 +9,9 @@ release-purge:
   rm -rf ./release
   mkdir ./release
   mkdir ./release/mods
-  mkdir ./release/dlc
 
 release-prepare-dlc:
-  cp -r markerscollection_icons/packed/dlc ./release/dlc
+  cp -r markerscollection_icons/packed/dlc ./release/dlc/
 
 release-prepare-dependencies:
   cp -r tw3-shared-utils/mod_sharedutils_oneliners ./release/mods/mod_sharedutils_oneliners
