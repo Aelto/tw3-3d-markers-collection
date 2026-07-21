@@ -1,1 +1,9 @@
 release
+
+markerscollection_icons/logs/
+markerscollection_icons/cooked/
+markerscollection_icons/cookeddlc/
+markerscollection_icons/publish/
+markerscollection_icons/packed/
+markerscollection_icons/*.db
+markerscollection_icons/*.w3edit
