@@ -31,7 +31,6 @@ function SetEntityMapPinDiscoveredScript(
   GetWitcherPlayer().AddTimer('TDMCUP_delayOnelinerCreation', 5.0f);
 }
 
-
 function TDMCUP_getPinsByCardinalDirection(): array<SCommonMapPinInstance> {
   var local_map_pins: array<SCommonMapPinInstance>;
   var player_position: Vector;
