@@ -20,6 +20,17 @@ function OnSpawned(spawnData : SEntitySpawnData) {
   this.AddTimer('TDMCUP_delayOnelinerCreation', 60.0f, true);
 }
 
+@wrapMethod(CCommonMapManager)
+function SetEntityMapPinDiscoveredScript(
+  isFastTravelPoint: bool,
+  tag: name,
+  optional set: bool
+) {
+  wrappedMethod(isFastTravelPoint, tag, set);
+
+  GetWitcherPlayer().AddTimer('TDMCUP_delayOnelinerCreation', 5.0f);
+}
+
 
 function TDMCUP_getPinsByCardinalDirection(): array<SCommonMapPinInstance> {
   var local_map_pins: array<SCommonMapPinInstance>;
