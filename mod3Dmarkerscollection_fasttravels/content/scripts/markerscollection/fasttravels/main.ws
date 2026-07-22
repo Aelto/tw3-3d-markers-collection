@@ -59,16 +59,16 @@ class TDMCFT_Oneliner extends SU_Oneliner {
 
   private var was_visible_by_senses: bool;
   function getVisible(player_position: Vector): bool {
-    if (
-      theGame.IsFocusModeActive()
-    ) {
+    if (theGame.IsFocusModeActive()) {
       this.was_visible_by_senses = true;
+      this.setOpacity(1);
 
       return true;
     }
 
-    this.was_visible_by_senses = this.cached_screen_position.X >= 0.33
-      && this.cached_screen_position.X <= 0.66;
+    // the opacity is lowered as the OL drifts away from the center of the screen
+    this.setOpacity(1 - AbsF(0.5 - this.cached_screen_position.X) * 3);
+    this.was_visible_by_senses = this.opacity > 0;
 
     return this.was_visible_by_senses;
   }
