@@ -31,6 +31,17 @@ timer function TDMCAQ_delayOnelinerCreation(dt: float, id: int) {
 class TDMCAQ_Oneliner extends SU_Oneliner {
   default tag = "TDMCAQ";
 
+  function init(
+    text: string,
+    position: Vector
+  ): TDMCAQ_Oneliner {
+    this.text = text;
+    this.position = position;
+    this.register();
+
+    return this;
+  }
+
   private var was_visible_by_senses: bool;
   function getVisible(player_position: Vector): bool {
     if (
@@ -49,20 +60,6 @@ class TDMCAQ_Oneliner extends SU_Oneliner {
 
     return this.was_visible_by_senses;
   }
-}
-
-function TDMCAQ_oneliner(
-  text: string,
-  position: Vector
-): TDMCAQ_Oneliner {
-  var oneliner: TDMCAQ_Oneliner;
-
-  oneliner = new TDMCAQ_Oneliner in thePlayer;
-  oneliner.text = text;
-  oneliner.position = position;
-  oneliner.register();
-
-  return oneliner;
 }
 
 function TDMCAQ_tryCreateOneliner() {
@@ -105,13 +102,14 @@ function TDMCAQ_tryCreateOneliner() {
         continue;
       }
 
-      TDMCAQ_oneliner(
-        "<img src='img://icons/inventory/other/squarecoin.dds' height='18' width='18' /><br/>"
-        + "<font size='16'>"
-        + GetLocStringById(objective_quest.GetTitleStringId())
-        + "</font>",
-        local_map_pins[k].position
-      );
+      (new TDMCAQ_Oneliner in thePlayer)
+        .init(
+          "<img src='img://icons/inventory/other/squarecoin.dds' height='18' width='18' /><br/>"
+          + "<font size='16'>"
+          + GetLocStringById(objective_quest.GetTitleStringId())
+          + "</font>",
+          local_map_pins[k].position
+        );
     }
   }
 }
