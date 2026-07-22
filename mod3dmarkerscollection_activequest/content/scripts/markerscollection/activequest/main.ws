@@ -1,3 +1,7 @@
+//! Possible performance improvements:
+//! - Re-using the same instance of the OL class instead of destroying & creating
+//    new ones each time.
+
 @wrapMethod(CR4HudModuleQuests)
 function UpdateObjectives() {
   wrappedMethod();
@@ -21,7 +25,6 @@ function OnSpawned( spawnData : SEntitySpawnData ) {
 
 @addMethod(W3PlayerWitcher)
 timer function TDMCAQ_delayOnelinerCreation(dt: float, id: int) {
-  LogChannel('TDMCAQ', "TDMCAQ_delayOnelinerCreation()");
   TDMCAQ_tryCreateOneliner();
 }
 
@@ -67,7 +70,7 @@ function TDMCAQ_tryCreateOneliner() {
   local_map_pins = theGame
       .GetCommonMapManager()
       .GetMapPinInstances(theGame.GetWorld().GetPath());
-    
+
   for (k = 0; k < local_map_pins.Size(); k += 1) {
     if (!theGame.GetCommonMapManager().IsQuestPinType(local_map_pins[k].type)) {
       continue;

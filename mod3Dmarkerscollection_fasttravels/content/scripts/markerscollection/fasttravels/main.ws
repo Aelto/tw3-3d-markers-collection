@@ -1,3 +1,9 @@
+//! Possible performance improvements:
+//! - Caching the local map pins and especially a pre-filtered list of all the
+//!   fast travel pins.
+//! - Re-using the same instance of the OL class instead of destroying & creating
+//    new ones each time.
+
 @addMethod(W3PlayerWitcher)
 timer function TDMCFT_delayOnelinerCreation(dt: float, id: int) {
   var position: Vector;
