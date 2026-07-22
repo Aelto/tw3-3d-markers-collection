@@ -134,7 +134,6 @@ class TDMCUP_Oneliner extends SU_Oneliner {
   function getVisible(player_position: Vector): bool {
     if (
       theGame.IsFocusModeActive()
-      && super.getVisible(player_position)
     ) {
       this.was_visible_by_senses = true;
 

@@ -35,7 +35,7 @@ class TDMCAQ_Oneliner extends SU_Oneliner {
   function getVisible(player_position: Vector): bool {
     if (
       theGame.IsFocusModeActive()
-      && super.getVisible(player_position)
+      || VecDistanceSquared2D(player_position, this.position) < 20 * 20
     ) {
       this.was_visible_by_senses = true;
 
