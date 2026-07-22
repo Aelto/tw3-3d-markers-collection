@@ -4,6 +4,7 @@
 release: release-purge release-prepare-dependencies release-prepare-dlc && release-zip
   cp -r mod3dmarkerscollection_activequest ./release/mods/
   cp -r mod3dmarkerscollection_fasttravels ./release/mods/
+  cp -r mod3dmarkerscollection_unexploredpoi ./release/mods/
 
 release-purge:
   rm -rf ./release
