@@ -4,6 +4,38 @@
 //! - Re-using the same instance of the OL class instead of destroying & creating
 //    new ones each time.
 
+@addField(TDMC_Cache)
+var fasttravel_oneliner: TDMCFT_Oneliner;
+
+@wrapMethod(TDMC_Cache)
+function initialize() {
+  wrappedMethod();
+
+  this.fasttravel_oneliner = new TDMCFT_Oneliner in this;
+}
+
+@wrapMethod(TDMC_Cache)
+function cacheLocalMapPins() {
+  var k: int;
+  wrappedMethod();
+
+  for (k = 0; k < this.merchants_oneliners.Size(); k += 1) {
+    this.merchants_oneliners[k].updateMapPinsCache(this.local_map_pins);
+  }
+}
+
+@wrapMethod(TDMC_Cache)
+function onIntervalFast() {
+  var player_position: Vector;
+  var k: int;
+  wrappedMethod();
+
+  player_position = thePlayer.GetWorldPosition();
+  for (k = 0; k < this.merchants_oneliners.Size(); k += 1) {
+    this.merchants_oneliners[k].lookForCloserMapPin(player_position);
+  }
+}
+
 @addMethod(W3PlayerWitcher)
 timer function TDMCFT_delayOnelinerCreation(dt: float, id: int) {
   var position: Vector;
@@ -14,7 +46,7 @@ timer function TDMCFT_delayOnelinerCreation(dt: float, id: int) {
 
   SUOL_getManager().deleteByTagPrefix("TDMCFT");
   if (position.X != position.Y || position.X != 0.0) {
-    (new TDMCFT_Oneliner in thePlayer).init(position);
+    (new TDMCFT_Oneliner in thePlayer).prepare(position);
 
     // use the distance to calculate how often it should search for new markers.
     // The further away from the marker the more often it runs, because as we
@@ -44,33 +76,17 @@ function OnSpawned(spawnData : SEntitySpawnData) {
   this.AddTimer('TDMCFT_delayOnelinerCreation', 10.0f);
 }
 
-class TDMCFT_Oneliner extends SU_Oneliner {
+class TDMCFT_Oneliner extends TDMC_Oneliner {
   default tag = "TDMCFT";
 
-  function init(position: Vector): TDMCFT_Oneliner {
-    this.position = position + Vector(0, 0, 1.0);
+  function prepare(position: Vector): TDMCFT_Oneliner {
+    super.init(
+      position + Vector(0, 0, 1.0),
+      "<img src='img://icons/markers/icon_signpost.png' height='32' width='32' />"
+    );
 
-    // dlc\dlcmarkerscollection_icons\data\gameplay\gui_new\icons\markers\icon_signpost.png
-    this.text = "<img src='img://icons/markers/icon_signpost.png' height='32' width='32' />";
     this.register();
-
     return this;
-  }
-
-  private var was_visible_by_senses: bool;
-  function getVisible(player_position: Vector): bool {
-    if (theGame.IsFocusModeActive()) {
-      this.was_visible_by_senses = true;
-      this.setOpacity(1);
-
-      return true;
-    }
-
-    // the opacity is lowered as the OL drifts away from the center of the screen
-    this.setOpacity(1 - AbsF(0.5 - this.cached_screen_position.X) * 3);
-    this.was_visible_by_senses = this.opacity > 0;
-
-    return this.was_visible_by_senses;
   }
 }
 

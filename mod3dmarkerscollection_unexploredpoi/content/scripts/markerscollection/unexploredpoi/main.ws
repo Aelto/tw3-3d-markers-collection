@@ -7,7 +7,7 @@ timer function TDMCUP_delayOnelinerCreation(dt: float, id: int) {
   SUOL_getManager().deleteByTagPrefix("TDMCUP");
 
   for (k = 0; k < pins.Size(); k += 1) {
-    (new TDMCUP_Oneliner in thePlayer).init(pins[k].position);
+    (new TDMCUP_Oneliner in thePlayer).prepare(pins[k].position);
   }
 }
 
@@ -117,32 +117,16 @@ function TDMCUP_getPinsByCardinalDirection(): array<SCommonMapPinInstance> {
   return picked_pins_by_cardinal;
 }
 
-class TDMCUP_Oneliner extends SU_Oneliner {
+class TDMCUP_Oneliner extends TDMC_Oneliner {
   default tag = "TDMCUP";
 
-  function init(position: Vector): TDMCUP_Oneliner {
-    this.position = position + Vector(0, 0, 1.0);
-
-    // dlc\dlcmarkerscollection_icons\data\gameplay\gui_new\icons\markers\icon_signpost.png
-    this.text = "<img src='img://icons/markers/icon_point_of_interest.png' height='32' width='32' />";
+  function prepare(position: Vector): TDMCUP_Oneliner {
+    super.init(
+      position + Vector(0, 0, 1.0),
+      "<img src='img://icons/markers/icon_point_of_interest.png' height='32' width='32' />"
+    );
     this.register();
 
     return this;
-  }
-
-  private var was_visible_by_senses: bool;
-  function getVisible(player_position: Vector): bool {
-    if (theGame.IsFocusModeActive()) {
-      this.was_visible_by_senses = true;
-      this.setOpacity(1);
-
-      return true;
-    }
-
-    // the opacity is lowered as the OL drifts away from the center of the screen
-    this.setOpacity(1 - AbsF(0.5 - this.cached_screen_position.X) * 3);
-    this.was_visible_by_senses = this.opacity > 0;
-
-    return this.was_visible_by_senses;
   }
 }

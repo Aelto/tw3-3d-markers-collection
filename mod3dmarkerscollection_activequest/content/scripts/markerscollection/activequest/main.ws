@@ -31,12 +31,11 @@ timer function TDMCAQ_delayOnelinerCreation(dt: float, id: int) {
 class TDMCAQ_Oneliner extends SU_Oneliner {
   default tag = "TDMCAQ";
 
-  function init(
+  function prepare(
     text: string,
     position: Vector
   ): TDMCAQ_Oneliner {
-    this.text = text;
-    this.position = position;
+    super.init(position, text);
     this.register();
 
     return this;
@@ -53,10 +52,6 @@ class TDMCAQ_Oneliner extends SU_Oneliner {
 
       return true;
     }
-
-    // the opacity is lowered as the OL drifts away from the center of the screen
-    this.setOpacity(1 - AbsF(0.5 - this.cached_screen_position.X) * 3);
-    this.was_visible_by_senses = this.opacity > 0;
 
     return this.was_visible_by_senses;
   }
