@@ -24,3 +24,7 @@ class TDMC_Cache {
         .GetMapPinInstances(theGame.GetWorld().GetPath());
   }
 }
+
+function TDMC_CacheGet(): TDMC_Cache {
+  return GetWitcherPlayer().TDMC_cache;
+}

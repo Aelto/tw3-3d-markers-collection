@@ -23,16 +23,8 @@ class TDMC_Oneliner extends SU_Oneliner {
   }
 }
 
-/// Sub-type of TDMC_Oneliner that is supposed to be unique based on a list of
-/// map-pins it contains.
-class TDMC_OnelinerUnique extends TDMC_Oneliner {
-  protected var cached_map_pins: array<Vector>;
-
-  /// Maximum distance for displayed map pins
-  protected var maximum_distance: float;
-  default maximum_distance = 150.0f;
-
-  private var cached_distance_to_player: float;
+class TDMC_OnelinerWithCache extends TDMC_Oneliner {
+  protected var cached_map_pins: array<SCommonMapPinInstance>;
 
   public function updateMapPinsCache(
     // out parameter to avoid copying the array
@@ -43,7 +35,7 @@ class TDMC_OnelinerUnique extends TDMC_Oneliner {
     this.cached_map_pins.Clear();
     for (k = 0; k < local_map_pins.Size(); k += 1) {
       if (this.shouldMapPinBeCached(local_map_pins[k])) {
-        this.cached_map_pins.PushBack(local_map_pins[k].position);
+        this.cached_map_pins.PushBack(local_map_pins[k]);
       }
     }
   }
@@ -51,6 +43,16 @@ class TDMC_OnelinerUnique extends TDMC_Oneliner {
   protected function shouldMapPinBeCached(out pin: SCommonMapPinInstance): bool {
     return true;
   }
+}
+
+/// Sub-type of TDMC_Oneliner that is supposed to be unique based on a list of
+/// map-pins it contains.
+class TDMC_OnelinerUnique extends TDMC_OnelinerWithCache {
+  /// Maximum distance for displayed map pins
+  protected var maximum_distance: float;
+  default maximum_distance = 150.0f;
+
+  private var cached_distance_to_player: float;
 
   public function lookForCloserMapPin(player_position: Vector) {
     var k: int;
@@ -61,31 +63,40 @@ class TDMC_OnelinerUnique extends TDMC_Oneliner {
     }
   }
 
-  private function computeSelfDistance(player_position: Vector) {
+  protected function computeSelfDistance(player_position: Vector) {
     this.cached_distance_to_player = VecDistanceSquared2D(
       player_position,
       this.position
     );
 
-    if (cached_distance_to_player > this.maximum_distance * this.maximum_distance) {
+    if (
+      this.maximum_distance > 0
+      && cached_distance_to_player > this.maximum_distance * this.maximum_distance
+    ) {
       this.unregister();
     }
   }
 
-  private function setPositionIfCloser(player_position: Vector, other_position: Vector) {
+  protected function setPositionIfCloser(
+    player_position: Vector,
+    out other: SCommonMapPinInstance
+  ) {
     var distance: float;
 
     distance = VecDistanceSquared2D(
       player_position,
-      other_position
+      other.position
     );
 
-    if (distance > this.maximum_distance * this.maximum_distance) {
+    if (
+      this.maximum_distance > 0
+      && distance > this.maximum_distance * this.maximum_distance
+    ) {
       return;
     }
 
     if (distance < this.cached_distance_to_player) {
-      this.position = other_position;
+      this.position = other.position;
       this.register();
     }
   }
