@@ -1,42 +1,10 @@
-@addMethod(W3PlayerWitcher)
-timer function TDMCME_delayOnelinerCreation(dt: float, id: int) {
-  TDMCME_getShopkeeperPins();
-}
+@addField(TDMC_Cache)
+var merchants_oneliners: array<TDMCME_Oneliner>;
 
-@wrapMethod(W3PlayerWitcher)
-function OnSpawned(spawnData : SEntitySpawnData) {
-  wrappedMethod(spawnData);
-
-  this.AddTimer('TDMCME_delayOnelinerCreation', 10.0f, false);
-  this.AddTimer('TDMCME_delayOnelinerCreation', 20.0f, false);
-  this.AddTimer('TDMCME_delayOnelinerCreation', 60.0f, true);
-}
-
-@wrapMethod(CR4Game)
-function OnAfterLoadingScreenGameStart() {
-  var result: bool;
-  result = wrappedMethod();
-
-  LogChannel('TDMCME', "OnAfterLoadingScreenGameStart");
-  GetWitcherPlayer().AddTimer('TDMCME_delayOnelinerCreation', 5.0f);
-
-  return result;
-}
-
-@addField(W3PlayerWitcher)
-var TDMCME_oneliners: array<TDMCME_Oneliner>;
-
-function TDMCME_getShopkeeperPins() {
+@wrapMethod(TDMC_Cache)
+function initialize() {
   var local_map_pins: array<SCommonMapPinInstance>;
-  var witcher: W3PlayerWitcher;
-  var player_position: Vector;
-  var icon: string;
-  var k: int;
-
-  SUOL_getManager().deleteByTagPrefix("TDMCME");
-
-  witcher = GetWitcherPlayer();
-  player_position = thePlayer.GetWorldPosition();
+  wrappedMethod();
 
   local_map_pins = theGame
       .GetCommonMapManager()
@@ -45,73 +13,90 @@ function TDMCME_getShopkeeperPins() {
   // builds a list of specialized oneliners that each look for a specific type
   // of map pin. Each oneliner caches a pre-filtered list of pins to make future
   // searches faster
-  if (witcher.TDMCME_oneliners.Size() <= 0) {
-    witcher.TDMCME_oneliners.PushBack(
-      (new TDMCME_Oneliner in thePlayer)
-        .prepare(
-          "icon_purse.png",
-          'Shopkeeper',
-          local_map_pins
-        )
-    );
+  this.merchants_oneliners.Clear();
+  this.merchants_oneliners.PushBack(
+    (new TDMCME_Oneliner in thePlayer)
+      .prepare(
+        "icon_purse.png",
+        'Shopkeeper',
+        local_map_pins
+      )
+  );
 
-    witcher.TDMCME_oneliners.PushBack(
-      (new TDMCME_Oneliner in thePlayer)
-        .prepare(
-          "icon_blacksmith.png",
-          'Blacksmith',
-          local_map_pins
-        )
-    );
+  this.merchants_oneliners.PushBack(
+    (new TDMCME_Oneliner in thePlayer)
+      .prepare(
+        "icon_blacksmith.png",
+        'Blacksmith',
+        local_map_pins
+      )
+  );
 
-    witcher.TDMCME_oneliners.PushBack(
-      (new TDMCME_Oneliner in thePlayer)
-        .prepare(
-          "icon_armorer.png",
-          'Armorer',
-          local_map_pins
-        )
-    );
+  this.merchants_oneliners.PushBack(
+    (new TDMCME_Oneliner in thePlayer)
+      .prepare(
+        "icon_armorer.png",
+        'Armorer',
+        local_map_pins
+      )
+  );
 
-    witcher.TDMCME_oneliners.PushBack(
-      (new TDMCME_Oneliner in thePlayer)
-        .prepare(
-          "icon_barber.png",
-          'Hairdresser',
-          local_map_pins
-        )
-    );
+  this.merchants_oneliners.PushBack(
+    (new TDMCME_Oneliner in thePlayer)
+      .prepare(
+        "icon_barber.png",
+        'Hairdresser',
+        local_map_pins
+      )
+  );
 
-    witcher.TDMCME_oneliners.PushBack(
-      (new TDMCME_Oneliner in thePlayer)
-        .prepare(
-          "icon_alchemy.png",
-          'Alchemic',
-          local_map_pins
-        )
-    );
+  this.merchants_oneliners.PushBack(
+    (new TDMCME_Oneliner in thePlayer)
+      .prepare(
+        "icon_alchemy.png",
+        'Alchemic',
+        local_map_pins
+      )
+  );
 
-    witcher.TDMCME_oneliners.PushBack(
-      (new TDMCME_Oneliner in thePlayer)
-        .prepare(
-          "icon_herbalist.png",
-          'Herbalist',
-          local_map_pins
-        )
-    );
+  this.merchants_oneliners.PushBack(
+    (new TDMCME_Oneliner in thePlayer)
+      .prepare(
+        "icon_herbalist.png",
+        'Herbalist',
+        local_map_pins
+      )
+  );
 
-    witcher.TDMCME_oneliners.PushBack(
-      (new TDMCME_Oneliner in thePlayer)
-        .prepare(
-          "icon_innkeeper.png",
-          'Innkeeper',
-          local_map_pins
-        )
-    );
+  this.merchants_oneliners.PushBack(
+    (new TDMCME_Oneliner in thePlayer)
+      .prepare(
+        "icon_innkeeper.png",
+        'Innkeeper',
+        local_map_pins
+      )
+  );
+}
+
+@wrapMethod(TDMC_Cache)
+function cacheLocalMapPins() {
+  var k: int;
+  wrappedMethod();
+
+  for (k = 0; k < this.merchants_oneliners.Size(); k += 1) {
+    this.merchants_oneliners[k].updateMapPinsCache(this.local_map_pins);
   }
+}
 
-  for (k = 0; k < witcher.TDMCME_oneliners.Size(); k += 1) {
-    witcher.TDMCME_oneliners[k].lookForCloserMapPin(player_position);
+@wrapMethod(TDMC_Cache)
+function onIntervalFast() {
+  var player_position: Vector;
+  var k: int;
+  wrappedMethod();
+
+  player_position = thePlayer.GetWorldPosition();
+  for (k = 0; k < this.merchants_oneliners.Size(); k += 1) {
+    this.merchants_oneliners[k].lookForCloserMapPin(player_position);
   }
 }
 
@@ -124,21 +109,16 @@ class TDMCME_Oneliner extends SU_Oneliner {
   // caches the positions of the map pins that match this oneliner's type.
   // Only the position is cached to avoid wasting memory.
   private var pins: array<Vector>;
+  private var visible_type: name;
   function prepare(
     icon: string,
     visible_type: name,
     // out parameter to avoid copying the array
     out local_map_pins: array<SCommonMapPinInstance>
   ): TDMCME_Oneliner {
-    var k: int;
-
+    this.visible_type = visible_type;
     this.text = "<img src='img://icons/markers/"+icon+"' height='32' width='32' />";
-    this.pins.Clear();
-    for (k = 0; k < local_map_pins.Size(); k += 1) {
-      if (local_map_pins[k].visibleType == visible_type) {
-        this.pins.PushBack(local_map_pins[k].position);
-      }
-    }
+    this.updateMapPinsCache(local_map_pins);
 
     // set a default position so that it doesn't point to 0;0;0
     if (this.pins.Size() > 0) {
@@ -146,6 +126,20 @@ class TDMCME_Oneliner extends SU_Oneliner {
     }
 
     return this;
+  }
+
+  public function updateMapPinsCache(
+    // out parameter to avoid copying the array
+    out local_map_pins: array<SCommonMapPinInstance>
+  ) {
+    var k: int;
+
+    this.pins.Clear();
+    for (k = 0; k < local_map_pins.Size(); k += 1) {
+      if (local_map_pins[k].visibleType == this.visible_type) {
+        this.pins.PushBack(local_map_pins[k].position);
+      }
+    }
   }
 
   private var is_registered: bool;
@@ -197,6 +191,11 @@ class TDMCME_Oneliner extends SU_Oneliner {
       player_position,
       this.position
     );
+
+    if (cached_distance_to_player > 150 * 150) {
+      this.unregister();
+      this.is_registered = false;
+    }
   }
 
   function setPositionIfCloser(player_position: Vector, other_position: Vector) {
@@ -206,6 +205,10 @@ class TDMCME_Oneliner extends SU_Oneliner {
       player_position,
       other_position
     );
+
+    if (distance > 150 * 150) {
+      return;
+    }
 
     if (distance < this.cached_distance_to_player) {
       this.init(other_position);
