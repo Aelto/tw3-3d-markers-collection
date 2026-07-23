@@ -22,7 +22,7 @@ function OnSpawned(spawnData : SEntitySpawnData) {
   wrappedMethod(spawnData);
 
   this.TDMC_cache = new TDMC_Cache in this;
-  this.AddTimer('TDMC_initialize', 5.0, true);
+  this.AddTimer('TDMC_initialize', 5.0, false);
   this.AddTimer('TDMC_intervalFast', 5.0, true);
   this.AddTimer('TDMC_intervalMedium', 15.0, true);
 }

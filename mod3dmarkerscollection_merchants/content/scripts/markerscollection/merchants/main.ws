@@ -111,6 +111,7 @@ class TDMCME_Oneliner extends TDMC_OnelinerUnique {
   ): TDMCME_Oneliner {
     this.visible_type = visible_type;
     this.text = "<img src='img://icons/markers/"+icon+"' height='32' width='32' />";
+    this.offset = Vector(0, 0, 1.0);
     this.updateMapPinsCache(local_map_pins);
 
     return this;
