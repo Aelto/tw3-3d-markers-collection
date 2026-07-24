@@ -55,7 +55,6 @@ function cacheLocalMapPins() {
 function onIntervalFast() {
   wrappedMethod();
   TDMCUP_updateUnexploredPoiPins(TDMC_CacheGet());
-
 }
 
 @wrapMethod(CCommonMapManager)

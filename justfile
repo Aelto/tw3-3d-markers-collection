@@ -6,6 +6,7 @@ release: release-purge release-prepare-dependencies release-prepare-dlc && relea
   cp -r mod3dmarkerscollection_fasttravels ./release/mods/
   cp -r mod3dmarkerscollection_unexploredpoi ./release/mods/
   cp -r mod3dmarkerscollection_merchants ./release/mods/
+  cp -r mod3dmarkerscollection_roach ./release/mods/
   cp -r mod3dmarkerscollection_shared ./release/mods/
 
 release-purge:
